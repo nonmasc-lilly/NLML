@@ -146,26 +146,56 @@ char *evaluate(char *str, struct status *status) {
 struct macro *parse_string(char *str, struct status *status,
         COUNT *rlen) {
     struct macro *ret, tmp2;
-    char **li, *buf, *tmp, *s1, *s2;
-    BOOL scont;
+    char **li, *buf, *tmp, *s1, *s2, *eptr, tmp4, tmp5[3];
+    BOOL scont, nscont;
     COUNT i, j, lisz, bsz, retsz;
-    long tmp3;
+    long tmp3, tmp6;
     li = DARR_INIT(lisz);
     buf = DARR_INIT(bsz);
     ret = DARR_INIT(retsz);
-    scont = 0;
+    nscont = scont = 0;
     for(i=0; str[i]; i++) {
-        if(str[i] == '\"')
+        if(str[i] == '\"') {
             scont = !scont;
+            nscont = 1;
+        }
         if(scont) {
-            DARR_APPEND(buf, str[i], bsz);
+            if(str[i] == '\\') {
+                i++;
+                switch(str[i]) {
+                case '\\': tmp4 = '\\'; break; 
+                case 'n':  tmp4 = 0xA;  break;
+                case 'r':  tmp4 = 0xD;  break;
+                case 'a':  tmp4 = 0x7;  break;
+                case 'f':  tmp4 = 0xC;  break;
+                case 't':  tmp4 = 0x9;  break;
+                case 'v':  tmp4 = 0xB;  break;
+                case 'b':  tmp4 = 0x8; break;
+                case '\'': tmp4 = '\''; break;
+                case '\"': tmp4 = '\"'; break;
+                case 'x':
+                    tmp5[0] = str[i+1];
+                    tmp5[1] = str[i+2];
+                    tmp5[2] = 0x0;
+                    tmp6 = strtol(tmp5, &eptr, 16);
+                    if(!(*tmp5) || *eptr)
+                        THROW("expected '\\x' to contain valid "
+                              "two character hex argument (such "
+                              "as \\x0C or \\x33)\n");
+                    i+=2;
+                    tmp4 = (char)tmp6;
+                    break;
+                }
+            } else tmp4 = str[i];
+            DARR_APPEND(buf, tmp4, bsz);
             continue;
         }
-        if(str[i] == ' ' || str[i] == '\n' || str[i] == '\t') {
+        if(str[i] == ' ' || str[i] == '\n' || str[i] == '\t' || nscont) {
             if(bsz == 0) continue;
             DARR_APPEND(buf, 0, bsz);
             DARR_APPEND(li, buf, lisz);
             buf = DARR_INIT(bsz);
+            nscont = 0;
             continue;
         }
         DARR_APPEND(buf, str[i], bsz);
