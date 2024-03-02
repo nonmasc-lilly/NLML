@@ -7,15 +7,14 @@
     (darr)[(darr_size)] = (item);
 
 typedef unsigned int COUNT;
+typedef unsigned int BOOL;
 typedef enum {
     T_STRING,
     T_NUMBER
 } TYPE;
-
 struct status {
     int intsize;
 };
-
 struct macro {
     TYPE types[2];
     void *in;
@@ -63,12 +62,10 @@ int main(int argc, char **argv) {
     free(ret);
     return 0;
 }
-
 void THROW(const char *message) {
     fprintf(stderr, message);
     exit(1);
 }
-
 char *evaluate(char *str, struct status *status) {
     char *ret, *eptr;
     COUNT i, retsz;
@@ -143,3 +140,31 @@ char *evaluate(char *str, struct status *status) {
         return ret;
     }
 }
+struct macro *parse_string(char *str, struct status *status) {
+    struct macro *ret;
+    char **li, *buf, *tmp;
+    BOOL scont;
+    COUNT i, lisz, bsz, rsz;
+    li = DARR_INIT(lisz);
+    buf = DARR_INIT(bsz);
+    ret = DARR_INIT(rsz);
+    for(i=0; str[i]; i++) {
+        if(str[i] == '\"')
+            scont = !scont;
+        if(scont) {
+            DARR_APPEND(buf, str[i], bsz);
+            continue;
+        }
+        if(str[i] == ' ' || str[i] == '\n' || str[i] == '\t') {
+            if(bsz == 0) continue;
+            DARR_APPEND(buf, 0, bsz);
+            DARR_APPEND(li, buf, lisz);
+            buf = DARR_INIT(bsz);
+            continue;
+        }
+        DARR_APPEND(buf, str[i], bsz);
+    }
+}
+
+
+
