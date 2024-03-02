@@ -27,4 +27,8 @@ NLML is a language designed to process files into other files.
   + `\"`   becomes `"`
   + `\xnn` becomes the hex of `nn`
 
+## installation
 
+to install nlml head to the C folder and run make install
+this will download the program executable into usr/local/bin
+under the name `nmc`

@@ -33,7 +33,7 @@ int main(int argc, char **argv) {
     COUNT fsz, macro_len, i;
 
     if(argc < 4) {
-        fprintf(stderr, "USAGE: %s <rule file>"
+        fprintf(stderr, "USAGE: %s <rule file> "
             "<input file> <output file>\n", argv[0]);
         exit(1);
     }
