@@ -87,7 +87,7 @@ char *evaluate(char *str, struct status *status) {
         DARR_APPEND(ret, 0, retsz);
         return ret;
     case 'x':
-        tmp = strtol(str, &eptr, 16);
+        tmp = strtol(str+1, &eptr, 16);
         if(!(*str) || *eptr)
             THROW("explicit hex conversion failed");
         for(i=0; i<status->intsize; i++) {
@@ -98,7 +98,7 @@ char *evaluate(char *str, struct status *status) {
         DARR_APPEND(ret, 0, retsz);
         return ret;
     case 'd':
-        tmp = strtol(str, &eptr, 10);
+        tmp = strtol(str+1, &eptr, 10);
         if(!(*str) || *eptr)
             THROW("decimal conversion failed");
         for(i=0; i<status->intsize; i++) {
@@ -109,7 +109,7 @@ char *evaluate(char *str, struct status *status) {
         DARR_APPEND(ret, 0, retsz);
         return ret;
     case 'o':
-        tmp = strtol(str, &eptr, 8);
+        tmp = strtol(str+1, &eptr, 8);
         if(!(*str) || *eptr)
             THROW("octal conversion failed");
         for(i=0; i<status->intsize; i++) {
@@ -120,7 +120,7 @@ char *evaluate(char *str, struct status *status) {
         DARR_APPEND(ret, 0, retsz);
         return ret;
     case 'b':
-        tmp = strtol(str, &eptr, 1);
+        tmp = strtol(str+1, &eptr, 2);
         if(!(*str) || *eptr)
             THROW("binary conversion failed");
         for(i=0; i<status->intsize; i++) {
@@ -131,7 +131,7 @@ char *evaluate(char *str, struct status *status) {
         DARR_APPEND(ret, 0, retsz);
         return ret;
     default:
-        tmp = strtol(str, &eptr, 16);
+        tmp = strtol(str+1, &eptr, 16);
         if(!(*str) || *eptr)
             THROW("expected valid token");
         for(i=0; i<status->intsize; i++) {

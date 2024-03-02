@@ -1,5 +1,5 @@
 
-"hello" => "hello world\n"
-"goodbye" => "goodbye world"
+"hello" => b1010
+"goodbye" => d10
 
 
