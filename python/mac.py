@@ -31,7 +31,7 @@ def evaluate(string: str):
         return int(string[1:], 2).to_bytes(intsize).decode();
     else:
         try:
-            return int(string, 16);
+            return int(string, 16).to_bytes(intsize).decode();
         except ValueError:
             THROW("expected evaluateable token");
 
